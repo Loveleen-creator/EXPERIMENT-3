@@ -12,28 +12,55 @@
 <style>
 body{
   font-family:Arial;
-  background:#2f3640;
+  background:#1e272e;
   padding:30px;
   color:white;
 }
 .container{
-  max-width:1000px;
+  max-width:1100px;
   margin:auto;
 }
-h1{text-align:center;margin-bottom:30px;}
+h1{text-align:center;margin-bottom:25px;}
+form{
+  display:flex;
+  gap:10px;
+  margin-bottom:25px;
+  flex-wrap:wrap;
+}
+input,select,button{
+  padding:8px;
+  border:none;
+  border-radius:6px;
+}
+button{
+  background:#00a8ff;
+  color:white;
+  cursor:pointer;
+}
 .grid{
   display:grid;
-  gap:20px;
+  gap:15px;
 }
 .card{
   background:white;
   color:black;
-  padding:20px;
+  padding:15px;
   border-radius:10px;
+  position:relative;
+}
+.remove{
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:#e84118;
+  color:white;
+  border:none;
+  padding:4px 8px;
+  cursor:pointer;
 }
 .role{
   font-weight:bold;
-  margin-bottom:8px;
+  margin-bottom:6px;
 }
 @media(min-width:700px){
   .grid{
@@ -48,7 +75,7 @@ h1{text-align:center;margin-bottom:30px;}
 
 <script type="text/babel">
 
-// 🔹 Base Class
+// Base Class
 class Person {
   constructor(name, age){
     this.name = name;
@@ -60,66 +87,120 @@ class Person {
   }
 
   getDescription(){
-    return `${this.name} is ${this.age} years old.`;
+    return `${this.name}, Age ${this.age}`;
   }
 
   getSpecialInfo(){
-    return "General individual.";
+    return "General Individual";
   }
 }
 
-// 🔹 Student subclass
+// Student
 class Student extends Person {
   constructor(name, age, course){
     super(name, age);
     this.course = course;
   }
 
-  // Method Overriding
   getRole(){
     return "Student";
   }
 
   getSpecialInfo(){
-    return `Enrolled in ${this.course}.`;
+    return `Course: ${this.course}`;
   }
 }
 
-// 🔹 Teacher subclass
+// Teacher
 class Teacher extends Person {
   constructor(name, age, subject){
     super(name, age);
     this.subject = subject;
   }
 
-  // Method Overriding
   getRole(){
     return "Teacher";
   }
 
   getSpecialInfo(){
-    return `Teaches ${this.subject}.`;
+    return `Subject: ${this.subject}`;
   }
 }
 
 function App(){
 
-  // 🔹 Polymorphism (All treated as Person type)
-  const people = [
-    new Person("Rahul", 45),
-    new Student("Ananya", 20, "Computer Science"),
-    new Teacher("Mr. Iyer", 38, "Mathematics"),
-    new Student("Karan", 22, "Mechanical Engineering"),
-    new Teacher("Ms. Sharma", 33, "Physics")
-  ];
+  const [people,setPeople] = React.useState([
+    new Student("Ananya",20,"Computer Science"),
+    new Teacher("Mr. Rao",40,"Mathematics")
+  ]);
+
+  const [type,setType] = React.useState("Student");
+  const [name,setName] = React.useState("");
+  const [age,setAge] = React.useState("");
+  const [extra,setExtra] = React.useState("");
+
+  const addPerson = (e) => {
+    e.preventDefault();
+    if(!name || !age || !extra) return;
+
+    let newPerson;
+
+    if(type === "Student"){
+      newPerson = new Student(name,age,extra);
+    } else {
+      newPerson = new Teacher(name,age,extra);
+    }
+
+    setPeople([...people,newPerson]);
+    setName("");
+    setAge("");
+    setExtra("");
+  };
+
+  const removePerson = (index) => {
+    setPeople(people.filter((_,i)=>i!==index));
+  };
 
   return(
     <div className="container">
       <h1>Person Class Hierarchy</h1>
 
+      <form onSubmit={addPerson}>
+        <select value={type} onChange={(e)=>setType(e.target.value)}>
+          <option>Student</option>
+          <option>Teacher</option>
+        </select>
+
+        <input 
+          placeholder="Name"
+          value={name}
+          onChange={(e)=>setName(e.target.value)}
+        />
+
+        <input 
+          type="number"
+          placeholder="Age"
+          value={age}
+          onChange={(e)=>setAge(e.target.value)}
+        />
+
+        <input 
+          placeholder={type==="Student" ? "Course" : "Subject"}
+          value={extra}
+          onChange={(e)=>setExtra(e.target.value)}
+        />
+
+        <button type="submit">Add</button>
+      </form>
+
       <div className="grid">
         {people.map((person,index)=>(
           <div key={index} className="card">
+            <button 
+              className="remove"
+              onClick={()=>removePerson(index)}
+            >X</button>
+
             <div className="role">{person.getRole()}</div>
             <div>{person.getDescription()}</div>
             <div>{person.getSpecialInfo()}</div>
