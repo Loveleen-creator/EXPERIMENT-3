@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Experiment 3.2 - Library Management UI</title>
+<title>Library Management UI</title>
 
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -12,103 +12,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
-
-body {
-  background: linear-gradient(135deg,#1f4037,#99f2c8);
-  min-height:100vh;
-  padding:40px 20px;
-}
-
-.container {
-  max-width:1000px;
-  margin:auto;
-}
-
-h1 {
-  text-align:center;
-  margin-bottom:25px;
-  color:#fff;
-}
-
-.top-bar {
-  display:flex;
-  flex-wrap:wrap;
-  gap:15px;
-  margin-bottom:25px;
-}
-
-input, button {
-  padding:10px 14px;
-  border-radius:8px;
-  border:none;
-  font-size:14px;
-}
-
-input {
-  flex:1;
-}
-
-button {
-  background:#2c3e50;
-  color:white;
-  cursor:pointer;
-  transition:0.2s;
-}
-
-button:hover {
-  background:#34495e;
-}
-
-.form {
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-bottom:30px;
-}
-
-.book-grid {
-  display:grid;
-  gap:20px;
-}
-
-.book-card {
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#1e272e;padding:30px;color:white;}
+.container{max-width:1100px;margin:auto;}
+h1{text-align:center;margin-bottom:25px;}
+input,button{padding:10px;border:none;border-radius:6px;}
+input{margin-right:10px;}
+button{background:#00a8ff;color:white;cursor:pointer;}
+button:hover{background:#0097e6;}
+.grid{display:grid;gap:15px;margin-top:25px;}
+.card{
   background:white;
-  padding:18px;
-  border-radius:14px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  color:black;
+  padding:15px;
+  border-radius:10px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  transition:0.3s;
 }
-
-.book-card:hover {
-  transform:translateY(-5px);
-}
-
-.book-info h3 {
-  font-size:16px;
-  margin-bottom:5px;
-}
-
-.book-info p {
-  font-size:13px;
-  color:#555;
-}
-
-.remove-btn {
-  background:#e74c3c;
-}
-
-.remove-btn:hover {
-  background:#c0392b;
-}
-
+.remove{background:#e84118;}
+.remove:hover{background:#c23616;}
 @media(min-width:700px){
-  .book-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
+  .grid{grid-template-columns:repeat(2,1fr);}
 }
 </style>
 </head>
@@ -118,87 +43,110 @@ button:hover {
 
 <script type="text/babel">
 
-function LibraryApp() {
-  const [books, setBooks] = React.useState([
-    { id:1, title:"React Basics", author:"Dan Abramov" },
-    { id:2, title:"JavaScript Mastery", author:"Brendan Eich" },
-    { id:3, title:"Node.js Guide", author:"Ryan Dahl" }
-  ]);
+function App(){
 
-  const [search, setSearch] = React.useState("");
-  const [title, setTitle] = React.useState("");
-  const [author, setAuthor] = React.useState("");
+const initialBooks = [
+{id:1,title:"The Alchemist",author:"Paulo Coelho"},
+{id:2,title:"1984",author:"George Orwell"},
+{id:3,title:"To Kill a Mockingbird",author:"Harper Lee"},
+{id:4,title:"The Great Gatsby",author:"F. Scott Fitzgerald"},
+{id:5,title:"Moby Dick",author:"Herman Melville"},
+{id:6,title:"Pride and Prejudice",author:"Jane Austen"},
+{id:7,title:"The Hobbit",author:"J.R.R. Tolkien"},
+{id:8,title:"War and Peace",author:"Leo Tolstoy"},
+{id:9,title:"Crime and Punishment",author:"Fyodor Dostoevsky"},
+{id:10,title:"The Catcher in the Rye",author:"J.D. Salinger"},
+{id:11,title:"The Lord of the Rings",author:"J.R.R. Tolkien"},
+{id:12,title:"Harry Potter",author:"J.K. Rowling"},
+{id:13,title:"The Kite Runner",author:"Khaled Hosseini"},
+{id:14,title:"The Da Vinci Code",author:"Dan Brown"},
+{id:15,title:"Brave New World",author:"Aldous Huxley"},
+{id:16,title:"The Book Thief",author:"Markus Zusak"},
+{id:17,title:"The Shining",author:"Stephen King"},
+{id:18,title:"The Hunger Games",author:"Suzanne Collins"},
+{id:19,title:"The Fault in Our Stars",author:"John Green"},
+{id:20,title:"Atomic Habits",author:"James Clear"}
+];
 
-  const addBook = () => {
-    if(title.trim()==="" || author.trim()==="") return;
-    const newBook = {
-      id: Date.now(),
-      title,
-      author
-    };
-    setBooks([...books, newBook]);
-    setTitle("");
-    setAuthor("");
-  };
+const [books,setBooks] = React.useState(initialBooks);
+const [search,setSearch] = React.useState("");
+const [title,setTitle] = React.useState("");
+const [author,setAuthor] = React.useState("");
 
-  const removeBook = (id) => {
-    setBooks(books.filter(book => book.id !== id));
-  };
+const addBook = (e) => {
+e.preventDefault();   // FIXED
+if(!title.trim() || !author.trim()) return;
 
-  const filteredBooks = books.filter(book =>
-    book.title.toLowerCase().includes(search.toLowerCase())
-  );
+const newBook = {
+  id: Date.now(),
+  title:title.trim(),
+  author:author.trim()
+};
 
-  return (
-    <div className="container">
-      <h1>Library Management UI</h1>
+setBooks([...books,newBook]);
+setTitle("");
+setAuthor("");
+};
 
-      <div className="top-bar">
-        <input
-          type="text"
-          placeholder="Search book..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-      </div>
+const removeBook = (id) => {
+setBooks(books.filter(book=>book.id!==id));
+};
 
-      <div className="form">
-        <input
-          type="text"
-          placeholder="Book Title"
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Author Name"
-          value={author}
-          onChange={e => setAuthor(e.target.value)}
-        />
-        <button onClick={addBook}>Add Book</button>
-      </div>
+const filtered = books.filter(book =>
+book.title.toLowerCase().includes(search.toLowerCase())
+);
 
-      <div className="book-grid">
-        {filteredBooks.map(book => (
-          <div key={book.id} className="book-card">
-            <div className="book-info">
-              <h3>{book.title}</h3>
-              <p>Author: {book.author}</p>
-            </div>
-            <button 
-              className="remove-btn"
-              onClick={() => removeBook(book.id)}
-            >
-              Remove
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+return(
+<div className="container">
+<h1>Library Management UI</h1>
+
+<div style={{marginBottom:"20px"}}>
+<input 
+type="text"
+placeholder="Search books..."
+value={search}
+onChange={(e)=>setSearch(e.target.value)}
+/>
+</div>
+
+<form onSubmit={addBook} style={{marginBottom:"20px"}}>
+<input
+type="text"
+placeholder="Book Title"
+value={title}
+onChange={(e)=>setTitle(e.target.value)}
+/>
+<input
+type="text"
+placeholder="Author"
+value={author}
+onChange={(e)=>setAuthor(e.target.value)}
+/>
+<button type="submit">Add Book</button>
+</form>
+
+<div className="grid">
+{filtered.map(book=>(
+<div key={book.id} className="card">
+<div>
+<strong>{book.title}</strong><br/>
+<small>{book.author}</small>
+</div>
+<button 
+className="remove"
+onClick={()=>removeBook(book.id)}
+>
+Remove
+</button>
+</div>
+))}
+</div>
+
+</div>
+);
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<LibraryApp />);
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 
 </script>
 </body>
