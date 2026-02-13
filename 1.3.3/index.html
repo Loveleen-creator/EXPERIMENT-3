@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,60 +12,36 @@
 <style>
 body{
   font-family:Arial;
-  background:#1e272e;
+  background:#0f2027;
+  color:white;
   padding:30px;
-  color:white;
 }
-.container{
-  max-width:1100px;
-  margin:auto;
-}
+.container{max-width:1100px;margin:auto;}
 h1{text-align:center;margin-bottom:25px;}
-form{
-  display:flex;
-  gap:10px;
-  margin-bottom:25px;
-  flex-wrap:wrap;
+.section{
+  margin-bottom:30px;
+  padding:20px;
+  background:#203a43;
+  border-radius:10px;
 }
-input,select,button{
-  padding:8px;
-  border:none;
-  border-radius:6px;
-}
-button{
-  background:#00a8ff;
-  color:white;
-  cursor:pointer;
-}
-.grid{
-  display:grid;
-  gap:15px;
-}
-.card{
+.box{
+  padding:15px;
   background:white;
   color:black;
-  padding:15px;
-  border-radius:10px;
-  position:relative;
+  border-radius:8px;
+  margin-top:10px;
 }
-.remove{
-  position:absolute;
-  top:10px;
-  right:10px;
-  background:#e84118;
-  color:white;
+button{
+  padding:8px 12px;
+  margin-right:10px;
   border:none;
-  padding:4px 8px;
+  border-radius:6px;
+  background:#00c9ff;
   cursor:pointer;
 }
-.role{
+.result{
+  margin-top:15px;
   font-weight:bold;
-  margin-bottom:6px;
-}
-@media(min-width:700px){
-  .grid{
-    grid-template-columns:repeat(3,1fr);
-  }
 }
 </style>
 </head>
@@ -77,136 +53,103 @@ button{
 
 // Base Class
 class Person {
-  constructor(name, age){
+  constructor(name){
     this.name = name;
-    this.age = age;
   }
 
-  getRole(){
+  introduce(){
+    return `Hi, I am ${this.name}.`;
+  }
+
+  role(){
     return "Person";
-  }
-
-  getDescription(){
-    return `${this.name}, Age ${this.age}`;
-  }
-
-  getSpecialInfo(){
-    return "General Individual";
   }
 }
 
 // Student
 class Student extends Person {
-  constructor(name, age, course){
-    super(name, age);
+  constructor(name, course){
+    super(name);
     this.course = course;
   }
 
-  getRole(){
+  role(){
     return "Student";
   }
 
-  getSpecialInfo(){
-    return `Course: ${this.course}`;
+  introduce(){
+    return `Hi, I am ${this.name}, studying ${this.course}.`;
   }
 }
 
 // Teacher
 class Teacher extends Person {
-  constructor(name, age, subject){
-    super(name, age);
+  constructor(name, subject){
+    super(name);
     this.subject = subject;
   }
 
-  getRole(){
+  role(){
     return "Teacher";
   }
 
-  getSpecialInfo(){
-    return `Subject: ${this.subject}`;
+  introduce(){
+    return `Hi, I am ${this.name}, I teach ${this.subject}.`;
   }
 }
 
 function App(){
 
-  const [people,setPeople] = React.useState([
-    new Student("Ananya",20,"Computer Science"),
-    new Teacher("Mr. Rao",40,"Mathematics")
-  ]);
+  const [output,setOutput] = React.useState("");
 
-  const [type,setType] = React.useState("Student");
-  const [name,setName] = React.useState("");
-  const [age,setAge] = React.useState("");
-  const [extra,setExtra] = React.useState("");
+  const demonstrate = () => {
 
-  const addPerson = (e) => {
-    e.preventDefault();
-    if(!name || !age || !extra) return;
+    const people = [
+      new Person("Rahul"),
+      new Student("Ananya","Computer Science"),
+      new Teacher("Mr. Iyer","Mathematics")
+    ];
 
-    let newPerson;
+    let result = "";
 
-    if(type === "Student"){
-      newPerson = new Student(name,age,extra);
-    } else {
-      newPerson = new Teacher(name,age,extra);
-    }
+    people.forEach(p=>{
+      result += `
+Type: ${p.role()}
+Instance of Person: ${p instanceof Person}
+Instance of Student: ${p instanceof Student}
+Instance of Teacher: ${p instanceof Teacher}
+Introduction: ${p.introduce()}
+-------------------------
+`;
+    });
 
-    setPeople([...people,newPerson]);
-    setName("");
-    setAge("");
-    setExtra("");
-  };
-
-  const removePerson = (index) => {
-    setPeople(people.filter((_,i)=>i!==index));
+    setOutput(result);
   };
 
   return(
     <div className="container">
-      <h1>Person Class Hierarchy</h1>
 
-      <form onSubmit={addPerson}>
-        <select value={type} onChange={(e)=>setType(e.target.value)}>
-          <option>Student</option>
-          <option>Teacher</option>
-        </select>
+      <h1>Person Class Hierarchy Demonstration</h1>
 
-        <input 
-          placeholder="Name"
-          value={name}
-          onChange={(e)=>setName(e.target.value)}
-        />
-
-        <input 
-          type="number"
-          placeholder="Age"
-          value={age}
-          onChange={(e)=>setAge(e.target.value)}
-        />
-
-        <input 
-          placeholder={type==="Student" ? "Course" : "Subject"}
-          value={extra}
-          onChange={(e)=>setExtra(e.target.value)}
-        />
-
-        <button type="submit">Add</button>
-      </form>
-
-      <div className="grid">
-        {people.map((person,index)=>(
-          <div key={index} className="card">
-            <button 
-              className="remove"
-              onClick={()=>removePerson(index)}
-            >X</button>
-
-            <div className="role">{person.getRole()}</div>
-            <div>{person.getDescription()}</div>
-            <div>{person.getSpecialInfo()}</div>
-          </div>
-        ))}
+      <div className="section">
+        <h3>Class Structure</h3>
+        <div className="box">
+          Person → Student <br/>
+          Person → Teacher
+        </div>
       </div>
+
+      <div className="section">
+        <h3>Polymorphism Demonstration</h3>
+        <button onClick={demonstrate}>
+          Run Demonstration
+        </button>
+
+        <pre className="result">
+{output}
+        </pre>
+      </div>
+
     </div>
   );
 }
