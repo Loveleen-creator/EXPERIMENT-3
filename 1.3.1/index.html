@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Experiment 3.1 - ProductCard Component</title>
+
+<!-- React CDN -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  color: white;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1200px;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 40px;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+}
+
+.product-card {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 18px;
+  padding: 25px;
+  text-align: left;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+.product-img {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.product-card h3 {
+  margin-bottom: 8px;
+  font-size: 1.2rem;
+}
+
+.price {
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #ffd369;
+}
+
+.description {
+  font-size: 0.9rem;
+  opacity: 0.85;
+  margin-bottom: 15px;
+}
+
+.stock {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.in-stock {
+  background: #00c853;
+}
+
+.out-stock {
+  background: #ff1744;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.buy-btn {
+  background: white;
+  color: #2a5298;
+}
+
+.buy-btn:hover {
+  background: #ffd369;
+}
+
+.disabled-btn {
+  background: #777;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.6rem;
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+
+function ProductCard(props) {
+  return (
+    <div className="product-card">
+      <div className={`stock ${props.inStock ? "in-stock" : "out-stock"}`}>
+        {props.inStock ? "In Stock" : "Out of Stock"}
+      </div>
+
+      <div className="product-img">{props.image}</div>
+      <h3>{props.name}</h3>
+      <div className="price">${props.price}</div>
+      <div className="description">{props.description}</div>
+
+      {props.inStock ? (
+        <button className="buy-btn">Add to Cart</button>
+      ) : (
+        <button className="disabled-btn" disabled>Unavailable</button>
+      )}
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <div className="app-container">
+      <h1>Reusable ProductCard Component</h1>
+
+      <div className="products-grid">
+        <ProductCard
+          name="Wireless Headphones"
+          price="129.99"
+          description="High quality noise cancelling headphones."
+          image="🎧"
+          inStock={true}
+        />
+
+        <ProductCard
+          name="Smart Watch"
+          price="249.99"
+          description="Track fitness, calls and notifications."
+          image="⌚"
+          inStock={false}
+        />
+
+        <ProductCard
+          name="Gaming Mouse"
+          price="59.99"
+          description="RGB gaming mouse with ultra precision."
+          image="🖱️"
+          inStock={true}
+        />
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+
+</script>
+</body>
+</html>
