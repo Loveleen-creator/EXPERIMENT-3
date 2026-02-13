@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Experiment 3.3 - Person Class Hierarchy</title>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+
+body {
+  background: linear-gradient(135deg,#232526,#414345);
+  min-height:100vh;
+  padding:40px 20px;
+  color:white;
+}
+
+.container {
+  max-width:900px;
+  margin:auto;
+  text-align:center;
+}
+
+h1 {
+  margin-bottom:30px;
+}
+
+.card-grid {
+  display:grid;
+  gap:20px;
+}
+
+.card {
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(10px);
+  padding:20px;
+  border-radius:16px;
+  transition:0.3s;
+  text-align:left;
+}
+
+.card:hover {
+  transform:translateY(-6px);
+  background:rgba(255,255,255,0.15);
+}
+
+.role {
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:6px;
+  opacity:0.8;
+}
+
+.name {
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:8px;
+}
+
+.details {
+  font-size:14px;
+  opacity:0.9;
+}
+
+@media(min-width:700px){
+  .card-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+
+// Base Class
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  getDetails() {
+    return `${this.name}, Age: ${this.age}`;
+  }
+
+  getRole() {
+    return "Person";
+  }
+}
+
+// Student subclass
+class Student extends Person {
+  constructor(name, age, grade) {
+    super(name, age);
+    this.grade = grade;
+  }
+
+  getRole() {
+    return "Student";
+  }
+
+  getDetails() {
+    return `${super.getDetails()}, Grade: ${this.grade}`;
+  }
+}
+
+// Teacher subclass
+class Teacher extends Person {
+  constructor(name, age, subject) {
+    super(name, age);
+    this.subject = subject;
+  }
+
+  getRole() {
+    return "Teacher";
+  }
+
+  getDetails() {
+    return `${super.getDetails()}, Subject: ${this.subject}`;
+  }
+}
+
+function App() {
+
+  // Polymorphism demonstration
+  const people = [
+    new Person("Alex", 40),
+    new Student("Riya", 20, "A"),
+    new Teacher("Mr. Sharma", 35, "Mathematics"),
+    new Student("Arjun", 22, "B+"),
+    new Teacher("Ms. Iyer", 30, "Physics")
+  ];
+
+  return (
+    <div className="container">
+      <h1>Person Class Hierarchy</h1>
+
+      <div className="card-grid">
+        {people.map((person, index) => (
+          <div key={index} className="card">
+            <div className="role">{person.getRole()}</div>
+            <div className="name">{person.name}</div>
+            <div className="details">{person.getDetails()}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+</script>
+</body>
+</html>
