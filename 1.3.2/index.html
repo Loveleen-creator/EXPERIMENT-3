@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Experiment 3.2 - Library Management UI</title>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+
+body {
+  background: linear-gradient(135deg,#1f4037,#99f2c8);
+  min-height:100vh;
+  padding:40px 20px;
+}
+
+.container {
+  max-width:1000px;
+  margin:auto;
+}
+
+h1 {
+  text-align:center;
+  margin-bottom:25px;
+  color:#fff;
+}
+
+.top-bar {
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+  margin-bottom:25px;
+}
+
+input, button {
+  padding:10px 14px;
+  border-radius:8px;
+  border:none;
+  font-size:14px;
+}
+
+input {
+  flex:1;
+}
+
+button {
+  background:#2c3e50;
+  color:white;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+button:hover {
+  background:#34495e;
+}
+
+.form {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:30px;
+}
+
+.book-grid {
+  display:grid;
+  gap:20px;
+}
+
+.book-card {
+  background:white;
+  padding:18px;
+  border-radius:14px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  transition:0.3s;
+}
+
+.book-card:hover {
+  transform:translateY(-5px);
+}
+
+.book-info h3 {
+  font-size:16px;
+  margin-bottom:5px;
+}
+
+.book-info p {
+  font-size:13px;
+  color:#555;
+}
+
+.remove-btn {
+  background:#e74c3c;
+}
+
+.remove-btn:hover {
+  background:#c0392b;
+}
+
+@media(min-width:700px){
+  .book-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+
+function LibraryApp() {
+  const [books, setBooks] = React.useState([
+    { id:1, title:"React Basics", author:"Dan Abramov" },
+    { id:2, title:"JavaScript Mastery", author:"Brendan Eich" },
+    { id:3, title:"Node.js Guide", author:"Ryan Dahl" }
+  ]);
+
+  const [search, setSearch] = React.useState("");
+  const [title, setTitle] = React.useState("");
+  const [author, setAuthor] = React.useState("");
+
+  const addBook = () => {
+    if(title.trim()==="" || author.trim()==="") return;
+    const newBook = {
+      id: Date.now(),
+      title,
+      author
+    };
+    setBooks([...books, newBook]);
+    setTitle("");
+    setAuthor("");
+  };
+
+  const removeBook = (id) => {
+    setBooks(books.filter(book => book.id !== id));
+  };
+
+  const filteredBooks = books.filter(book =>
+    book.title.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="container">
+      <h1>Library Management UI</h1>
+
+      <div className="top-bar">
+        <input
+          type="text"
+          placeholder="Search book..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
+      <div className="form">
+        <input
+          type="text"
+          placeholder="Book Title"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Author Name"
+          value={author}
+          onChange={e => setAuthor(e.target.value)}
+        />
+        <button onClick={addBook}>Add Book</button>
+      </div>
+
+      <div className="book-grid">
+        {filteredBooks.map(book => (
+          <div key={book.id} className="book-card">
+            <div className="book-info">
+              <h3>{book.title}</h3>
+              <p>Author: {book.author}</p>
+            </div>
+            <button 
+              className="remove-btn"
+              onClick={() => removeBook(book.id)}
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<LibraryApp />);
+
+</script>
+</body>
+</html>
