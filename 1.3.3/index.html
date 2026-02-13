@@ -3,73 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Experiment 3.3 - Person Class Hierarchy</title>
+<title>Person Class Hierarchy</title>
 
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
 <style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
-
-body {
-  background: linear-gradient(135deg,#232526,#414345);
-  min-height:100vh;
-  padding:40px 20px;
+body{
+  font-family:Arial;
+  background:#2f3640;
+  padding:30px;
   color:white;
 }
-
-.container {
-  max-width:900px;
+.container{
+  max-width:1000px;
   margin:auto;
-  text-align:center;
 }
-
-h1 {
-  margin-bottom:30px;
-}
-
-.card-grid {
+h1{text-align:center;margin-bottom:30px;}
+.grid{
   display:grid;
   gap:20px;
 }
-
-.card {
-  background:rgba(255,255,255,0.1);
-  backdrop-filter:blur(10px);
+.card{
+  background:white;
+  color:black;
   padding:20px;
-  border-radius:16px;
-  transition:0.3s;
-  text-align:left;
+  border-radius:10px;
 }
-
-.card:hover {
-  transform:translateY(-6px);
-  background:rgba(255,255,255,0.15);
-}
-
-.role {
-  font-size:13px;
-  font-weight:600;
-  margin-bottom:6px;
-  opacity:0.8;
-}
-
-.name {
-  font-size:18px;
-  font-weight:700;
+.role{
+  font-weight:bold;
   margin-bottom:8px;
 }
-
-.details {
-  font-size:14px;
-  opacity:0.9;
-}
-
 @media(min-width:700px){
-  .card-grid{
+  .grid{
     grid-template-columns:repeat(3,1fr);
   }
 }
@@ -81,75 +48,81 @@ h1 {
 
 <script type="text/babel">
 
-// Base Class
+// 🔹 Base Class
 class Person {
-  constructor(name, age) {
+  constructor(name, age){
     this.name = name;
     this.age = age;
   }
 
-  getDetails() {
-    return `${this.name}, Age: ${this.age}`;
+  getRole(){
+    return "Person";
   }
 
-  getRole() {
-    return "Person";
+  getDescription(){
+    return `${this.name} is ${this.age} years old.`;
+  }
+
+  getSpecialInfo(){
+    return "General individual.";
   }
 }
 
-// Student subclass
+// 🔹 Student subclass
 class Student extends Person {
-  constructor(name, age, grade) {
+  constructor(name, age, course){
     super(name, age);
-    this.grade = grade;
+    this.course = course;
   }
 
-  getRole() {
+  // Method Overriding
+  getRole(){
     return "Student";
   }
 
-  getDetails() {
-    return `${super.getDetails()}, Grade: ${this.grade}`;
+  getSpecialInfo(){
+    return `Enrolled in ${this.course}.`;
   }
 }
 
-// Teacher subclass
+// 🔹 Teacher subclass
 class Teacher extends Person {
-  constructor(name, age, subject) {
+  constructor(name, age, subject){
     super(name, age);
     this.subject = subject;
   }
 
-  getRole() {
+  // Method Overriding
+  getRole(){
     return "Teacher";
   }
 
-  getDetails() {
-    return `${super.getDetails()}, Subject: ${this.subject}`;
+  getSpecialInfo(){
+    return `Teaches ${this.subject}.`;
   }
 }
 
-function App() {
+function App(){
 
-  // Polymorphism demonstration
+  // 🔹 Polymorphism (All treated as Person type)
   const people = [
-    new Person("Alex", 40),
-    new Student("Riya", 20, "A"),
-    new Teacher("Mr. Sharma", 35, "Mathematics"),
-    new Student("Arjun", 22, "B+"),
-    new Teacher("Ms. Iyer", 30, "Physics")
+    new Person("Rahul", 45),
+    new Student("Ananya", 20, "Computer Science"),
+    new Teacher("Mr. Iyer", 38, "Mathematics"),
+    new Student("Karan", 22, "Mechanical Engineering"),
+    new Teacher("Ms. Sharma", 33, "Physics")
   ];
 
-  return (
+  return(
     <div className="container">
       <h1>Person Class Hierarchy</h1>
 
-      <div className="card-grid">
-        {people.map((person, index) => (
+      <div className="grid">
+        {people.map((person,index)=>(
           <div key={index} className="card">
             <div className="role">{person.getRole()}</div>
-            <div className="name">{person.name}</div>
-            <div className="details">{person.getDetails()}</div>
+            <div>{person.getDescription()}</div>
+            <div>{person.getSpecialInfo()}</div>
           </div>
         ))}
       </div>
@@ -157,7 +130,7 @@ function App() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 
 </script>
 </body>
